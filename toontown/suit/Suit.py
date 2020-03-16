@@ -80,6 +80,7 @@ cc = (('speak', 'speak', 5),
 tm = (('speak', 'speak', 5),
  ('throw-paper', 'throw-paper', 5),
  ('pickpocket', 'pickpocket', 5),
+ ('phone', 'phone', 5),    
  ('roll-o-dex', 'roll-o-dex', 5),
  ('finger-wag', 'finger-wag', 5))
 nd = (('pickpocket', 'pickpocket', 5),
@@ -99,12 +100,47 @@ tf = (('phone', 'phone', 5),
 m = (('speak', 'speak', 5),
  ('magic2', 'magic2', 5),
  ('magic1', 'magic1', 5),
- ('golf-club-swing', 'golf-club-swing', 5),
- ('cigar-smoke', 'cigar-smoke', 8))
+ ('golf-club-swing', 'golf-club-swing', 5))
 mh = (('magic1', 'magic1', 5),
  ('smile', 'smile', 5),
+ ('magic2', 'magic2', 5),
+ ('speak', 'speak', 5),
  ('golf-club-swing', 'golf-club-swing', 5),
- ('song-and-dance', 'song-and-dance', 5))
+ ('song-and-dance', 'song-and-dance', 8))
+ca = (('pickpocket', 'pickpocket', 5),
+ ('speak', 'speak', 5),
+ ('throw-paper', 'throw-paper', 3.5))
+cn = (('speak', 'speak', 5),
+ ('throw-paper', 'throw-paper', 5),
+ ('effort', 'effort', 5),     
+ ('magic3', 'magic3', 5),
+ ('finger-wag', 'finger-wag', 5))
+sw = (('phone', 'phone', 5),
+ ('pickpocket', 'pickpocket', 5),
+ ('throw-paper', 'throw-paper', 5),    
+ ('roll-o-dex', 'roll-o-dex', 5))
+mdm = (('smile', 'smile', 5),
+ ('roll-o-dex', 'roll-o-dex', 5),      
+ ('magic3', 'magic3', 5))
+txm = (('cigar-smoke', 'cigar-smoke', 8),
+ ('pen-squirt', 'fountain-pen', 7),
+ ('glower', 'glower', 5),
+ ('magic1', 'magic1', 5))
+mg = (('speak', 'speak', 5),
+ ('glower', 'glower', 5),     
+ ('throw-paper', 'throw-paper', 5),
+ ('throw-object', 'throw-object', 5),
+ ('magic1', 'magic1', 5),
+ ('finger-wag', 'finger-wag', 5))
+bfh = (('magic1', 'magic1', 5), ('throw-paper', 'throw-paper', 3.5), ('glower', 'glower', 5), ('watercooler', 'watercooler', 5), ('effort', 'effort', 5))
+hho = (('cigar-smoke', 'cigar-smoke', 8),
+ ('pen-squirt', 'fountain-pen', 7),
+ ('glower', 'glower', 5),
+ ('throw-paper', 'throw-paper', 5),
+ ('magic1', 'magic1', 5),
+ ('song-and-dance', 'song-and-dance', 8),
+ ('magic2', 'magic2', 5),
+ ('golf-club-swing', 'golf-club-swing', 5))
 sc = (('throw-paper', 'throw-paper', 3.5), ('watercooler', 'watercooler', 5), ('pickpocket', 'pickpocket', 5))
 pp = (('throw-paper', 'throw-paper', 5), ('glower', 'glower', 5), ('finger-wag', 'fingerwag', 5))
 tw = (('throw-paper', 'throw-paper', 3.5),
@@ -115,7 +151,7 @@ bc = (('phone', 'phone', 5), ('hold-pencil', 'hold-pencil', 5))
 nc = (('phone', 'phone', 5), ('throw-object', 'throw-object', 5))
 mb = (('magic1', 'magic1', 5), ('throw-paper', 'throw-paper', 3.5))
 ls = (('throw-paper', 'throw-paper', 5), ('throw-object', 'throw-object', 5), ('hold-pencil', 'hold-pencil', 5))
-rb = (('glower', 'glower', 5), ('cigar-smoke', 'cigar-smoke', 8), ('magic1', 'magic1', 5), ('golf-club-swing', 'golf-club-swing', 5))
+rb = (('cigar-smoke', 'cigar-smoke', 8), ('magic1', 'magic1', 5), ('pickpocket', 'pickpocket', 5), ('golf-club-swing', 'golf-club-swing', 5))
 bf = (('pickpocket', 'pickpocket', 5),
  ('rubber-stamp', 'rubber-stamp', 5),
  ('shredder', 'shredder', 3.5),
@@ -127,8 +163,7 @@ b = (('effort', 'effort', 5),
 dt = (('rubber-stamp', 'rubber-stamp', 5),
  ('throw-paper', 'throw-paper', 5),
  ('speak', 'speak', 5),
- ('finger-wag', 'fingerwag', 5),
- ('throw-paper', 'throw-paper', 5))
+ ('finger-wag', 'fingerwag', 5))
 ac = (('throw-object', 'throw-object', 5),
  ('roll-o-dex', 'roll-o-dex', 5),
  ('stomp', 'stomp', 5),
@@ -146,9 +181,9 @@ le = (('speak', 'speak', 5),
  ('glower', 'glower', 5),
  ('throw-paper', 'throw-paper', 5))
 bw = (('finger-wag', 'fingerwag', 5),
- ('cigar-smoke', 'cigar-smoke', 8),
  ('gavel', 'gavel', 8),
  ('magic1', 'magic1', 5),
+ ('cigar-smoke', 'cigar-smoke', 8),     
  ('throw-object', 'throw-object', 5),
  ('throw-paper', 'throw-paper', 5))
 if not base.config.GetBool('want-new-cogs', 0):
@@ -235,10 +270,9 @@ def loadDialog(level):
         SuitDialogFiles = ['COG_VO_grunt',
          'COG_VO_murmur',
          'COG_VO_statement',
-         'COG_VO_question',
-         'COG_VO_exclaim']
+         'COG_VO_question']
         for file in SuitDialogFiles:
-            SuitDialogArray.append(base.loader.loadSfx(loadPath + file + '.ogg'))
+            SuitDialogArray.append(base.loadSfx(loadPath + file + '.ogg'))
 
         SuitDialogArray.append(SuitDialogArray[2])
 
@@ -252,12 +286,10 @@ def loadSkelDialog():
         murmur = loader.loadSfx('phase_5/audio/sfx/Skel_COG_VO_murmur.ogg')
         statement = loader.loadSfx('phase_5/audio/sfx/Skel_COG_VO_statement.ogg')
         question = loader.loadSfx('phase_5/audio/sfx/Skel_COG_VO_question.ogg')
-        exclaim = loader.loadSfx('phase_5/audio/sfx/Skel_COG_VO_exclaim.ogg')
         SkelSuitDialogArray = [grunt,
          murmur,
          statement,
          question,
-         exclaim,
          statement]
 
 
@@ -300,15 +332,11 @@ def attachSuitHead(node, suitName):
 
 class Suit(Avatar.Avatar):
     __module__ = __name__
-    healthColors = (Vec4(0, 1, 0, 1),
-     Vec4(1, 1, 0, 1),
-     Vec4(1, 0.5, 0, 1),
-     Vec4(1, 0, 0, 1),
-     Vec4(0.3, 0.3, 0.3, 1))
     medallionColors = {'c': Vec4(0.863, 0.776, 0.769, 1.0),
      's': Vec4(0.843, 0.745, 0.745, 1.0),
      'l': Vec4(0.749, 0.776, 0.824, 1.0),
-     'm': Vec4(0.749, 0.769, 0.749, 1.0)}
+     'm': Vec4(0.749, 0.769, 0.749, 1.0),
+     'g': Vec4(0.863, 0.776, 0.769, 1.0)}
 
     def __init__(self):
         try:
@@ -527,7 +555,9 @@ class Suit(Avatar.Avatar):
         Preloaded[filepath].copyTo(headModel)
         headReferences = headModel.findAllMatches('**/' + headType)
         for i in xrange(0, headReferences.getNumPaths()):
-            headPart = self.instance(headReferences.getPath(i), 'modelRoot', 'joint_head')
+            headPart = self.instance(headReferences.getPath(i), 'modelRoot', 'to_head')
+            if not headPart:
+                headPart = self.instance(headReferences.getPath(i), 'modelRoot', 'joint_head')
             if self.headTexture:
                 headTex = loader.loadTexture('phase_' + str(phase) + '/maps/' + self.headTexture)
                 headTex.setMinfilter(Texture.FTLinearMipmapLinear)
@@ -549,6 +579,8 @@ class Suit(Avatar.Avatar):
             return
         if dept == 'c':
             tieTex = loader.loadTexture('phase_5/maps/cog_robot_tie_boss.jpg')
+        elif dept == 'g':
+            tieTex = loader.loadTexture('phase_5/maps/cog_robot_tie_board.jpg')
         elif dept == 's':
             tieTex = loader.loadTexture('phase_5/maps/cog_robot_tie_sales.jpg')
         elif dept == 'l':
@@ -680,13 +712,3 @@ class Suit(Avatar.Avatar):
         else:
             return SuitDialogArray
     
-    def getTypeText(self):
-        if self.virtual:
-            return TTLocalizer.CogPanelVirtual
-        elif self.isWaiter:
-            return TTLocalizer.CogPanelWaiter
-        elif self.skeleRevives:
-            return TTLocalizer.CogPanelRevives % (self.skeleRevives + 1)
-        elif self.isSkelecog:
-            return TTLocalizer.CogPanelSkeleton
-        return ''

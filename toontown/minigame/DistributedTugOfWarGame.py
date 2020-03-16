@@ -1,3 +1,4 @@
+import random
 from panda3d.core import *
 from toontown.toonbase.ToonBaseGlobal import *
 from direct.interval.IntervalGlobal import *
@@ -24,7 +25,7 @@ from direct.task.Task import Task
 from otp.nametag import NametagGlobals
 
 class DistributedTugOfWarGame(DistributedMinigame):
-    bgm = 'phase_4/audio/bgm/MG_cannon_game_tug.ogg'
+    bgm = 'phase_4/audio/bgm/MG_tug_o_war.ogg'
     toonAnimNames = ['neutral',
      'tug-o-war',
      'slip-forward',
@@ -121,10 +122,10 @@ class DistributedTugOfWarGame(DistributedMinigame):
         ropeModel.removeNode()
         self.sky = loader.loadModel('phase_3.5/models/props/TT_sky')
         self.dropShadow = loader.loadModel('phase_3/models/props/drop_shadow')
-        self.correctSound = base.loader.loadSfx('phase_4/audio/sfx/MG_pos_buzzer.ogg')
-        self.sndHitWater = base.loader.loadSfx('phase_4/audio/sfx/MG_cannon_splash.ogg')
-        self.whistleSound = base.loader.loadSfx('phase_4/audio/sfx/AA_sound_whistle.ogg')
-        self.music = base.loader.loadMusic(self.bgm)
+        self.correctSound = base.loadSfx('phase_4/audio/sfx/MG_pos_buzzer.ogg')
+        self.sndHitWater = base.loadSfx('phase_4/audio/sfx/MG_cannon_splash.ogg')
+        self.whistleSound = base.loadSfx('phase_4/audio/sfx/AA_sound_whistle.ogg')
+        self.music = base.loadMusic(self.bgm)
         self.roundText = DirectLabel(text='     ', text_fg=(0, 1, 0, 1), frameColor=(1, 1, 1, 0), text_font=ToontownGlobals.getSignFont(), pos=(0.014, 0, -.84), scale=0.2)
         self.powerMeter = MinigamePowerMeter.MinigamePowerMeter(17)
         self.powerMeter.reparentTo(aspect2d)
@@ -358,13 +359,13 @@ class DistributedTugOfWarGame(DistributedMinigame):
         self.gameType = index
         self.suitLevel = suit
         if suit == 1:
-            self.suitType = 'pp'
+            self.suitType = random.choice(['f','p','bf','b','sc','pp','cc','tm','ca','cn'])
         elif suit == 2:
-            self.suitType = 'dt'
+            self.suitType = random.choice(['ym','mm','dt','ac','tw','bc','nd','gh','sw','mdm'])
         elif suit == 3:
-            self.suitType = 'gh'
+            self.suitType = random.choice(['ds','hh','bs','sd','nc','mb','ms','tf','txm','mg'])
         elif suit == 4:
-            self.suitType = 'cr'
+            self.suitType = random.choice(['cr','tbc','le','bw','ls','rb','m','mh','bfh','hho'])
 
     def setGameReady(self):
         if not self.hasLocalToon:

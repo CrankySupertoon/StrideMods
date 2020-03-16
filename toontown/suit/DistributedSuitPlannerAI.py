@@ -26,6 +26,8 @@ if config.GetBool('want-lawbot-cogdo', True):
     ALLOWED_FO_TRACKS += 'l'
 if config.GetBool('want-cashbot-cogdo', False):
     ALLOWED_FO_TRACKS += 'c'
+if config.GetBool('want-boardbot-cogdo', False):
+    ALLOWED_FO_TRACKS += 't'
 if config.GetBool('want-bossbot-cogdo', False):
     ALLOWED_FO_TRACKS += 'b'
 if config.GetBool('want-omni-cogdo', False):
@@ -41,7 +43,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
     POP_UPKEEP_DELAY = 10
     POP_ADJUST_DELAY = 300
     PATH_COLLISION_BUFFER = 5
-    TOTAL_MAX_SUITS = 50
+    TOTAL_MAX_SUITS = 58
     MIN_PATH_LEN = 40
     MAX_PATH_LEN = 300
     MIN_TAKEOVER_PATH_LEN = 2
@@ -540,7 +542,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
                                 oldestAge = age
                 if oldestAge > timeout:
                     self.notify.info('Street %d has %d buildings; reclaiming %0.2f-hour-old building.' % (self.zoneId, len(suitBuildings), oldestAge / 3600.0))
-                    oldest.b_setVictorList([0, 0, 0, 0])
+                    oldest.b_setVictorList([0, 0, 0, 0, 0])
                     oldest.updateSavedBy(None)
                     oldest.toonTakeOver()
         self.__waitForNextUpkeep()
@@ -654,8 +656,9 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
         numPerTrack = {
             'c': 0,
             'l': 0,
-            'm': 0,
-            's': 0
+            ',': 0,
+            's': 0#,
+            #'g': 0
         }
         for sp in self.air.suitPlanners.values():
             sp.countNumBuildingsPerTrack(numPerTrack)
@@ -663,12 +666,13 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
             numPerTrack['l'] += sp.pendingBuildingTracks.count('l')
             numPerTrack['m'] += sp.pendingBuildingTracks.count('m')
             numPerTrack['s'] += sp.pendingBuildingTracks.count('s')
+            #numPerTrack['g'] += sp.pendingBuildingTracks.count('g')
         numPerHeight = {
             0: 0,
             1: 0,
             2: 0,
-            3: 0,
-            4: 0
+            3: 0#,
+            #4: 0
         }
         for sp in self.air.suitPlanners.values():
             sp.countNumBuildingsPerHeight(numPerHeight)
@@ -680,7 +684,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
         while numToAssign > 0:
             smallestCount = None
             smallestTracks = []
-            for trackIndex in xrange(4):
+            for trackIndex in xrange(5):
                 if totalWeightPerTrack[trackIndex]:
                     track = SuitDNA.suitDepts[trackIndex]
                     count = numPerTrack[track]
@@ -696,7 +700,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
             buildingTrackIndex = SuitDNA.suitDepts.index(buildingTrack)
             smallestCount = None
             smallestHeights = []
-            for height in xrange(5):
+            for height in xrange(4):
                 if totalWeightPerHeight[height]:
                     count = float(numPerHeight[height]) / float(self.BUILDING_HEIGHT_DISTRIBUTION[height])
                     if (smallestCount is None) or (count < smallestCount):
@@ -735,6 +739,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
                     totalWeightPerTrack[1] -= weight * tracks[1]
                     totalWeightPerTrack[2] -= weight * tracks[2]
                     totalWeightPerTrack[3] -= weight * tracks[3]
+                    totalWeightPerTrack[4] -= weight * tracks[4]
                     totalWeightPerHeight[0] -= weight * heights[0]
                     totalWeightPerHeight[1] -= weight * heights[1]
                     totalWeightPerHeight[2] -= weight * heights[2]

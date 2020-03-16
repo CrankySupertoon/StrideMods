@@ -20,6 +20,7 @@ import sys
 FO_DICT = {'s': 'tt_m_ara_cbe_fieldOfficeMoverShaker',
  'l': 'tt_m_ara_cbe_fieldOfficeLegalEagle',
  'm': 'tt_m_ara_cbe_fieldOfficeMoverShaker',
+ #'g': 'tt_m_ara_cbe_fieldOfficeMoverShaker',          
  'c': 'tt_m_ara_cbe_fieldOfficeMoverShaker'}
 
 class DistributedBuilding(DistributedObject.DistributedObject):
@@ -60,6 +61,7 @@ class DistributedBuilding(DistributedObject.DistributedObject):
         self.transitionTrack = None
         self.elevatorNodePath = None
         self.victorList = [0,
+         #0,
          0,
          0,
          0]
@@ -320,8 +322,18 @@ class DistributedBuilding(DistributedObject.DistributedObject):
             self.cab = self.elevatorModel.find('**/elevator')
             cogIcons = loader.loadModel('phase_3/models/gui/cog_icons')
             dept = chr(self.track)
-            if dept in SuitDNA.suitDeptModelPaths:
-                corpIcon = cogIcons.find(SuitDNA.suitDeptModelPaths[dept]).copyTo(self.cab)
+            if dept == 'c':
+                corpIcon = cogIcons.find('**/CorpIcon').copyTo(self.cab)
+            elif dept == 's':
+                corpIcon = cogIcons.find('**/SalesIcon').copyTo(self.cab)
+            elif dept == 'l':
+                corpIcon = cogIcons.find('**/LegalIcon').copyTo(self.cab)
+            elif dept == 'm':
+                corpIcon = cogIcons.find('**/MoneyIcon').copyTo(self.cab)
+            #elif dept == 'g':
+            #    corpIcon = cogIcons.find('**/HackerIcon').copyTo(self.cab)
+            else:
+                corpIcon = hidden.attachNewNode("garbage")
             corpIcon.setPos(0, 6.79, 6.8)
             corpIcon.setScale(3)
             from toontown.suit import Suit
@@ -342,20 +354,20 @@ class DistributedBuilding(DistributedObject.DistributedObject):
         if base.config.GetBool('want-qa-regression', 0):
             self.notify.info('QA-REGRESSION: COGBUILDING: Cog Take Over')
         if self.cogDropSound == None:
-            self.cogDropSound = base.loader.loadSfx(self.TAKEOVER_SFX_PREFIX + 'cogbldg_drop.ogg')
-            self.cogLandSound = base.loader.loadSfx(self.TAKEOVER_SFX_PREFIX + 'cogbldg_land.ogg')
-            self.cogSettleSound = base.loader.loadSfx(self.TAKEOVER_SFX_PREFIX + 'cogbldg_settle.ogg')
-            self.openSfx = base.loader.loadSfx('phase_5/audio/sfx/elevator_door_open.ogg')
+            self.cogDropSound = base.loadSfx(self.TAKEOVER_SFX_PREFIX + 'cogbldg_drop.ogg')
+            self.cogLandSound = base.loadSfx(self.TAKEOVER_SFX_PREFIX + 'cogbldg_land.ogg')
+            self.cogSettleSound = base.loadSfx(self.TAKEOVER_SFX_PREFIX + 'cogbldg_settle.ogg')
+            self.openSfx = base.loadSfx('phase_5/audio/sfx/elevator_door_open.ogg')
         return
 
     def loadAnimToToonSfx(self):
         if base.config.GetBool('want-qa-regression', 0):
             self.notify.info('QA-REGRESSION: COGBUILDING: Toon Take Over')
         if self.cogWeakenSound == None:
-            self.cogWeakenSound = base.loader.loadSfx(self.TAKEOVER_SFX_PREFIX + 'cogbldg_weaken.ogg')
-            self.toonGrowSound = base.loader.loadSfx(self.TAKEOVER_SFX_PREFIX + 'toonbldg_grow.ogg')
-            self.toonSettleSound = base.loader.loadSfx(self.TAKEOVER_SFX_PREFIX + 'toonbldg_settle.ogg')
-            self.openSfx = base.loader.loadSfx('phase_5/audio/sfx/elevator_door_open.ogg')
+            self.cogWeakenSound = base.loadSfx(self.TAKEOVER_SFX_PREFIX + 'cogbldg_weaken.ogg')
+            self.toonGrowSound = base.loadSfx(self.TAKEOVER_SFX_PREFIX + 'toonbldg_grow.ogg')
+            self.toonSettleSound = base.loadSfx(self.TAKEOVER_SFX_PREFIX + 'toonbldg_settle.ogg')
+            self.openSfx = base.loadSfx('phase_5/audio/sfx/elevator_door_open.ogg')
         return
 
     def unloadSfx(self):
@@ -385,7 +397,8 @@ class DistributedBuilding(DistributedObject.DistributedObject):
         sideBldgNodes = self.getNodePaths()
         nodePath = hidden.find(self.getSbSearchString())
         newNP = self.setupSuitBuilding(nodePath)
-        if not self.leftDoor:
+        if not newNP:
+            self.setToToon()
             return
         closeDoors(self.leftDoor, self.rightDoor)
         newNP.stash()
@@ -431,16 +444,19 @@ class DistributedBuilding(DistributedObject.DistributedObject):
         return
 
     def setupSuitBuilding(self, nodePath):
-        if nodePath.isEmpty():
-            return
         dnaStore = self.cr.playGame.dnaStore
         level = int(self.difficulty / 2) + 1
         if level > 5:
             self.notify.warning('Level is bigger than 5: %s' % level)
-        suitNP = dnaStore.findNode('suit_landmark_' + chr(self.track) + str(min(level, 5)))
+        suitNP = dnaStore.findNode('suit_landmark_' + chr(self.track) + str(level))
+        if self.track == 'g':
+             return None        
         zoneId = dnaStore.getZoneFromBlockNumber(self.block)
         newParentNP = base.cr.playGame.hood.loader.zoneDict[zoneId]
-        suitBuildingNP = suitNP.copyTo(newParentNP)
+        try:
+         suitBuildingNP = suitNP.copyTo(newParentNP)
+        except:
+         pass
         buildingTitle = dnaStore.getTitleFromBlockNumber(self.block)
         if not buildingTitle:
             buildingTitle = TTLocalizer.CogsInc
@@ -455,22 +471,29 @@ class DistributedBuilding(DistributedObject.DistributedObject):
         textNode.setText(buildingTitle)
         textHeight = textNode.getHeight()
         zScale = (textHeight + 2) / 3.0
-        signOrigin = suitBuildingNP.find('**/sign_origin;+s')
-        backgroundNP = loader.loadModel('phase_5/models/modules/suit_sign')
-        backgroundNP.reparentTo(signOrigin)
-        backgroundNP.setPosHprScale(0.0, 0.0, textHeight * 0.8 / zScale, 0.0, 0.0, 0.0, 8.0, 8.0, 8.0 * zScale)
-        signTextNodePath = backgroundNP.attachNewNode(textNode.generate())
-        signTextNodePath.setPosHprScale(0.0, 0.0, -0.21 + textHeight * 0.1 / zScale, 0.0, 0.0, 0.0, 0.1, 0.1, 0.1 / zScale)
-        signTextNodePath.setColor(1.0, 1.0, 1.0, 1.0)
-        frontNP = suitBuildingNP.find('**/*_front/+GeomNode;+s')
-        backgroundNP.wrtReparentTo(frontNP)
-        frontNP.node().setEffect(DecalEffect.make())
-        signTextNodePath.setAttrib(DepthOffsetAttrib.make(1))
-        suitBuildingNP.setName('sb' + str(self.block) + ':_landmark__DNARoot')
-        suitBuildingNP.setPosHprScale(nodePath, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0)
-        suitBuildingNP.flattenMedium()
-        self.loadElevator(suitBuildingNP)
-        return suitBuildingNP
+        try:
+         signOrigin = suitBuildingNP.find('**/sign_origin;+s')
+         backgroundNP = loader.loadModel('phase_5/models/modules/suit_sign')
+         backgroundNP.reparentTo(signOrigin)
+         backgroundNP.setPosHprScale(0.0, 0.0, textHeight * 0.8 / zScale, 0.0, 0.0, 0.0, 8.0, 8.0, 8.0 * zScale)
+         signTextNodePath = backgroundNP.attachNewNode(textNode.generate())
+         signTextNodePath.setPosHprScale(0.0, 0.0, -0.21 + textHeight * 0.1 / zScale, 0.0, 0.0, 0.0, 0.1, 0.1, 0.1 / zScale)
+         signTextNodePath.setColor(1.0, 1.0, 1.0, 1.0)
+         signTextNodePath.setAttrib(DepthOffsetAttrib.make(1))
+         if chr(self.track) == 'l':
+           frontNP = suitBuildingNP.find('**/*_front')
+         else:
+           frontNP = suitBuildingNP.find('**/*_front/+GeomNode;+s')
+         backgroundNP.wrtReparentTo(frontNP)
+         frontNP.node().setEffect(DecalEffect.make())
+         signTextNodePath.setAttrib(DepthOffsetAttrib.make(1))
+         suitBuildingNP.setName('sb' + str(self.block) + ':_landmark__DNARoot')
+         suitBuildingNP.setPosHprScale(nodePath, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0)
+         #suitBuildingNP.flattenMedium()
+         self.loadElevator(suitBuildingNP)
+         return suitBuildingNP
+        except:
+         pass
 
     def cleanupSuitBuilding(self):
         if hasattr(self, 'floorIndicator'):
@@ -563,8 +586,11 @@ class DistributedBuilding(DistributedObject.DistributedObject):
         signTextNodePath = backgroundNP.attachNewNode(textNode.generate())
         signTextNodePath.setPosHprScale(0.0, 0.0, -0.13 + textHeight * 0.1 / zScale, 0.0, 0.0, 0.0, 0.1 * 8.0 / 20.0, 0.1, 0.1 / zScale)
         signTextNodePath.setColor(1.0, 1.0, 1.0, 1.0)
+        signTextNodePath.setAttrib(DepthOffsetAttrib.make(1))
         frontNP = suitBuildingNP.find('**/*_front')
         backgroundNP.wrtReparentTo(frontNP)
+        if chr(self.track) == 's':
+            frontNP.node().setEffect(DecalEffect.make())
         signTextNodePath.setAttrib(DepthOffsetAttrib.make(1))
         suitBuildingNP.setName('cb' + str(self.block) + ':_landmark__DNARoot')
         suitBuildingNP.setPosHprScale(nodePath, 15.463, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0)
@@ -843,6 +869,11 @@ class DistributedBuilding(DistributedObject.DistributedObject):
                     i.removeNode()
                 else:
                     i.stash()
+            if name[0] == 'g':
+                if name.find('_landmark_') != -1:
+                    i.removeNode()
+                else:
+                    i.stash()
 
         npc = hidden.findAllMatches(self.getSbSearchString())
         for i in xrange(npc.getNumPaths()):
@@ -870,6 +901,11 @@ class DistributedBuilding(DistributedObject.DistributedObject):
                 else:
                     i.stash()
             elif name[0] == 's':
+                if name.find('_landmark_') != -1:
+                    i.removeNode()
+                else:
+                    i.stash()
+            elif name[0] == 'g':
                 if name.find('_landmark_') != -1:
                     i.removeNode()
                 else:
@@ -907,6 +943,11 @@ class DistributedBuilding(DistributedObject.DistributedObject):
                 else:
                     i.unstash()
             elif name[0] == 'c':
+                if name.find('_landmark_') != -1:
+                    i.removeNode()
+                else:
+                    i.stash()
+            if name[0] == 'g':
                 if name.find('_landmark_') != -1:
                     i.removeNode()
                 else:

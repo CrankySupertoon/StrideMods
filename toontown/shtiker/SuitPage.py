@@ -3,10 +3,8 @@ from direct.task.Task import Task
 import SummonCogDialog
 from direct.gui.DirectGui import *
 from panda3d.core import *
-from toontown.toonbase import ToontownGlobals
-from toontown.toonbase import TTLocalizer
-from toontown.suit import SuitDNA
-from toontown.suit import Suit
+from toontown.toonbase import ToontownGlobals, TTLocalizer
+from toontown.suit import SuitDNA, Suit
 from toontown.battle import SuitBattleGlobals
 from CogPageGlobals import *
 SCALE_FACTOR = 1.5
@@ -75,8 +73,8 @@ SHADOW_SCALE_POS = ((1.225,
   0,
   10,
   -0.01),
- (1.05,
-  0,
+ (0.9,
+  0.005,
   10,
   -0.01),
  (0.95,
@@ -234,8 +232,6 @@ class SuitPage(ShtikerPage.ShtikerPage):
         for panel in self.panels:
             panel.destroy()
         del self.panels
-        for shadow in self.shadowModels:
-            shadow.removeNode()
 
         self.panelModel.removeNode()
         ShtikerPage.ShtikerPage.unload(self)
@@ -342,7 +338,7 @@ class SuitPage(ShtikerPage.ShtikerPage):
         self.rolloverFrame.setBin('gui-popup', 0)
         self.rolloverFrame.hide()
         gui.removeNode()
-        for dept in xrange(0, len(SuitDNA.suitDepts)):
+        for dept in xrange(0, len(SuitDNA.suitDepts) - 1):
             row = []
             color = PANEL_COLORS[dept]
             for type in xrange(0, SuitDNA.suitsPerDept):
@@ -485,20 +481,7 @@ class SuitPage(ShtikerPage.ShtikerPage):
             panel['image_color'] = PANEL_COLORS_COMPLETE1[index / SuitDNA.suitsPerDept]
         elif status == COG_COMPLETE2:
             panel['image_color'] = PANEL_COLORS_COMPLETE2[index / SuitDNA.suitsPerDept]
-        if status in (COG_DEFEATED, COG_COMPLETE1, COG_COMPLETE2):
-            name = SuitDNA.suitHeadTypes[index]
-            attributes = SuitBattleGlobals.SuitAttributes[name]
-            level = attributes['level']
-            groupAttacks, singleAttacks = SuitBattleGlobals.getAttacksByType(attributes)
-            info = TTLocalizer.SuitPageAttackFormat % (level + 1, level + 5, self.getAttackStrings(groupAttacks), self.getAttackStrings(singleAttacks))
-            
-            panel.hoverButton.bind(DGG.ENTER, self.showInfo, extraArgs=[panel, info])
-            panel.hoverButton.bind(DGG.EXIT, self.hideInfo)
     
-    def getAttackStrings(self, attacks):
-        string = '\n'.join(['%s %s' % (TTLocalizer.SuitAttackNames[attack[0]], '-'.join(str(x) for x in attack[1])) for attack in attacks])
-        return string if string else TTLocalizer.SuitPageNoAttacks
-
     def updateAllCogs(self, status):
         for index in xrange(0, len(base.localAvatar.cogs)):
             base.localAvatar.cogs[index] = status
@@ -507,7 +490,7 @@ class SuitPage(ShtikerPage.ShtikerPage):
     def updatePage(self):
         index = 0
         cogs = base.localAvatar.cogs
-        for dept in xrange(0, len(SuitDNA.suitDepts)):
+        for dept in xrange(0, len(SuitDNA.suitDepts)-1):
             for type in xrange(0, SuitDNA.suitsPerDept):
                 self.updateCogStatus(dept, type, cogs[index])
                 index += 1
@@ -515,7 +498,9 @@ class SuitPage(ShtikerPage.ShtikerPage):
         self.updateBuildingRadarButtons(base.localAvatar.buildingRadar)
 
     def updateCogStatus(self, dept, type, status):
-        if dept < 0 or dept > len(SuitDNA.suitDepts):
+        if dept == 5:
+            pass # no monobots allowed
+        if dept < 0 or dept > len(SuitDNA.suitDepts)-1:
             print 'ucs: bad cog dept: ', dept
         elif type < 0 or type > SuitDNA.suitsPerDept:
             print 'ucs: bad cog type: ', type
@@ -554,11 +539,14 @@ class SuitPage(ShtikerPage.ShtikerPage):
         for panel in panels:
             panel.count = 0
         for cog in cogList:
-            self.panels[cog].count += 1
+            if cog - ((len(SuitDNA.suitDepts)-1) * SuitDNA.suitsPerDept - 1) > 0: 
+                pass 
+            else:
+                self.panels[cog].count += 1
         for panel in panels:
             panel.cogRadarLabel['text'] = TTLocalizer.SuitPageCogRadar % panel.count
             if self.radarOn[deptNum]:
-                panel.quotaLabel.hide()
+                #panel.quotaLabel.hide()
                 def showLabel(label):
                     label.show()
                 taskMgr.doMethodLater(RADAR_DELAY * panels.index(panel), showLabel, 'showCogRadarLater', extraArgs=(panel.cogRadarLabel,))
@@ -569,7 +557,7 @@ class SuitPage(ShtikerPage.ShtikerPage):
                     taskMgr.doMethodLater(RADAR_DELAY * len(panels), activateButton, 'activateButtonLater')
             else:
                 panel.cogRadarLabel.hide()
-                panel.quotaLabel.show()
+                #panel.quotaLabel.show()
         return
 
     def updateBuildingRadarButtons(self, radars):

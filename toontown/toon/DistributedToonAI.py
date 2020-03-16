@@ -85,10 +85,10 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         self.glasses = (0, 0, 0)
         self.backpack = (0, 0, 0)
         self.shoes = (0, 0, 0)
-        self.cogTypes = [0, 0, 0, 0]
-        self.cogLevel = [0, 0, 0, 0]
-        self.cogParts = [0, 0, 0, 0]
-        self.cogRadar = [0, 0, 0, 0]
+        self.cogTypes = [0 * 5]
+        self.cogLevel = [0 * 5]
+        self.cogParts = [0 * 5]
+        self.cogRadar = [0 * 5]
         self.cogIndex = -1
         self.disguisePageFlag = 0
         self.sosPageFlag = 0
@@ -1058,6 +1058,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
             self.cogRadar = [0,
              0,
              0,
+             0,
              0]
         else:
             self.cogRadar = radar
@@ -1078,6 +1079,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
             self.buildingRadar = [0,
              0,
              0,
+             0,
              0]
         else:
             self.buildingRadar = radar
@@ -1096,6 +1098,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         if not types:
             self.notify.warning('cogTypes set to bad value: %s. Resetting to [0,0,0,0]' % types)
             self.cogTypes = [0,
+             0,
              0,
              0,
              0]
@@ -1122,8 +1125,9 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
     def setCogLevels(self, levels):
         if not levels:
-            self.notify.warning('cogLevels set to bad value: %s. Resetting to [0,0,0,0]' % levels)
+            self.notify.warning('cogLevels set to bad value: %s. Resetting to [0,0,0,0,0]' % levels)
             self.cogLevels = [0,
+             0,
              0,
              0,
              0]
@@ -1181,8 +1185,9 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
     def setCogParts(self, parts):
         if not parts:
-            self.notify.warning('cogParts set to bad value: %s. Resetting to [0,0,0,0]' % parts)
+            self.notify.warning('cogParts set to bad value: %s. Resetting to [0,0,0,0,0]' % parts)
             self.cogParts = [0,
+             0,
              0,
              0,
              0]
@@ -1246,8 +1251,9 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
     def setCogMerits(self, merits):
         if not merits:
-            self.notify.warning('cogMerits set to bad value: %s. Resetting to [0,0,0,0]' % merits)
+            self.notify.warning('cogMerits set to bad value: %s. Resetting to [0,0,0,0,0]' % merits)
             self.cogMerits = [0,
+             0,
              0,
              0,
              0]
@@ -4268,7 +4274,7 @@ def cheesyEffect(value, hood=0, expire=0):
         if value not in OTPGlobals.CEName2Id:
             return 'Invalid cheesy effect value: %s' % value
         value = OTPGlobals.CEName2Id[value]
-    elif not 0 <= value <= 15:
+    elif not 0 <= value <= 31:
         return 'Invalid cheesy effect value: %d' % value
     if (hood != 0) and (not 1000 <= hood < ToontownGlobals.DynamicZonesBegin):
         return 'Invalid hood ID: %d' % hood
@@ -4370,20 +4376,20 @@ def maxToon(missingTrack=None):
     # Max out their Cog suits:
     target.b_setCogParts(
         [
-            CogDisguiseGlobals.PartsPerSuitBitmasks[0],  # Bossbot
-            CogDisguiseGlobals.PartsPerSuitBitmasks[1],  # Lawbot
-            CogDisguiseGlobals.PartsPerSuitBitmasks[2],  # Cashbot
-            CogDisguiseGlobals.PartsPerSuitBitmasks[3]   # Sellbot
+            CogDisguiseGlobals.PartsPerSuitBitmasks[0],  # Boardbot
+            CogDisguiseGlobals.PartsPerSuitBitmasks[1],  # Bossbot
+            CogDisguiseGlobals.PartsPerSuitBitmasks[2],  # Lawbot
+            CogDisguiseGlobals.PartsPerSuitBitmasks[3],  # Cashbot
+            CogDisguiseGlobals.PartsPerSuitBitmasks[4],  # Sellbot
         ]
     )
-    target.b_setCogLevels([49] * 4)
-    target.b_setCogTypes([7, 7, 7, 7])
+    target.b_setCogLevels([49] * 5)
+    target.b_setCogTypes([7, 7, 7, 7, 7])
 
     # Max their Cog gallery:
     deptCount = len(SuitDNA.suitDepts)
     target.b_setCogCount(list(CogPageGlobals.COG_QUOTAS[1]) * deptCount)
     cogStatus = [CogPageGlobals.COG_COMPLETE2] * SuitDNA.suitsPerDept
-    target.b_setCogStatus(cogStatus * deptCount)
     target.b_setCogRadar([1, 1, 1, 1])
     target.b_setBuildingRadar([1, 1, 1, 1])
 

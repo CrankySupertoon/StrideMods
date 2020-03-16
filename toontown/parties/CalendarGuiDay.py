@@ -1,4 +1,4 @@
-from pandac.PandaModules import TextNode, PlaneNode, Plane
+from pandac.PandaModules import *
 from direct.gui.DirectGui import DirectFrame, DirectLabel, DirectButton, DirectScrolledList, DGG
 from direct.gui import DirectGuiGlobals
 from toontown.ai import HolidayGlobals

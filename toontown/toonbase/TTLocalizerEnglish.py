@@ -117,7 +117,9 @@ GlobalStreetNames = {20000: ('to', 'on', 'Tutorial Terrace'),
  13300: ('to the', 'in the', 'Lawbot A Office'),
  13400: ('to the', 'in the', 'Lawbot B Office'),
  13500: ('to the', 'in the', 'Lawbot C Office'),
- 13600: ('to the', 'in the', 'Lawbot D Office')}
+ 13600: ('to the', 'in the', 'Lawbot D Office'),
+ 14100: ('to', 'on', '???'),
+ 14500: ('to', 'on', '???')}
 DonaldsDock = ('to', 'in', lDonaldsDock)
 ToontownCentral = ('to', 'in', lToontownCentral)
 TheBrrrgh = ('to', 'in', lTheBrrrgh)
@@ -593,10 +595,10 @@ QuestDialogDict = {
        LEAVING: QuestsDefaultLeaving},
  164: {QUEST: 'You look like you could use some new gags.\x07Go see %s, maybe he can help you out._where_' % Flippy},
  165: {QUEST: 'Hi there.\x07Looks like you need to practice training your gags.\x07Every time you hit a Cog with one of your gags, your experience increases.\x07When you get enough experience, you will be able to use an even better gag.\x07Go practice your gags by defeating 4 Cogs.'},
- 166: {QUEST: 'Nice work defeating those Cogs.\x07You know, the Cogs come in four different types.\x07They are Lawbots, Cashbots, Sellbots, and Bossbots.\x07You can tell them apart by their coloring and their name labels.\x07For practice go defeat 4 Bossbots.'},
- 167: {QUEST: 'Nice work defeating those Cogs.\x07You know, the Cogs come in four different types.\x07They are Lawbots, Cashbots, Sellbots, and Bossbots.\x07You can tell them apart by their coloring and their name labels.\x07For practice go defeat 4 Lawbots.'},
- 168: {QUEST: 'Nice work defeating those Cogs.\x07You know, the Cogs come in four different types.\x07They are Lawbots, Cashbots, Sellbots, and Bossbots.\x07You can tell them apart by their coloring and their name labels.\x07For practice go defeat 4 Sellbots.'},
- 169: {QUEST: 'Nice work defeating those Cogs.\x07You know, the Cogs come in four different types.\x07They are Lawbots, Cashbots, Sellbots, and Bossbots.\x07You can tell them apart by their coloring and their name labels.\x07For practice go defeat 4 Cashbots.'},
+ 166: {QUEST: 'Nice work defeating those Cogs.\x07You know, the Cogs come in four different types.\x07They are Lawbots, Cashbots, Sellbots, Bossbots and Boardbot.\x07You can tell them apart by their coloring and their name labels.\x07For practice go defeat 5 Bossbots.'},
+ 167: {QUEST: 'Nice work defeating those Cogs.\x07You know, the Cogs come in four different types.\x07They are Lawbots, Cashbots, Sellbots, Bossbots and Boardbot.\x07You can tell them apart by their coloring and their name labels.\x07For practice go defeat 5 Lawbots.'},
+ 168: {QUEST: 'Nice work defeating those Cogs.\x07You know, the Cogs come in four different types.\x07They are Lawbots, Cashbots, Sellbots, Bossbots and Boardbot.\x07You can tell them apart by their coloring and their name labels.\x07For practice go defeat 5 Sellbots.'},
+ 169: {QUEST: 'Nice work defeating those Cogs.\x07You know, the Cogs come in four different types.\x07They are Lawbots, Cashbots, Sellbots, Bossbots and Boardbot.\x07You can tell them apart by their coloring and their name labels.\x07For practice go defeat 5 Cashbots.'},
  170: {QUEST: 'Nice work, now you know the difference between the 4 types of Cogs.\x07I think you are ready to start training for your third gag track.\x07Go talk to _toNpcName_ to choose your next gag track - he can give you some expert advice._where_'},
  171: {QUEST: 'Nice work, now you know the difference between the 4 types of Cogs.\x07I think you are ready to start training for your third gag track.\x07Go talk to _toNpcName_ to choose your next gag track - he can give you some expert advice._where_'},
  172: {QUEST: 'Nice work, now you know the difference between the 4 types of Cogs.\x07I think you are ready to start training for your third gag track.\x07Go talk to _toNpcName_ to choose your next gag track - she can give you some expert advice._where_'},
@@ -2229,7 +2231,8 @@ RewardPanelMeritsMaxed = 'Maxed'
 RewardPanelMeritBarLabels = ['Stock Options',
  'Jury Notices',
  'Cogbucks',
- 'Merits']
+ 'Merits',
+ 'Pie Chart Pieces']
 RewardPanelMeritAlert = 'Ready for promotion!'
 RewardPanelCogPart = 'You gained a Cog disguise part!'
 RewardPanelPromotion = 'Ready for promotion in %s  track!'
@@ -7001,7 +7004,7 @@ TipDict = {TIP_NONE: ('',),
                'Enter Goofy Speedway through the tire-shaped tunnel in Toontown Central Playground.',
                'Earn Laff points at Goofy Speedway.',
                'Goofy Speedway has six different race tracks. '),
- TIP_STREET: ('There are four types of Cogs: Lawbots, Cashbots, Sellbots, and Bossbots.',
+ TIP_STREET: ('There are five types of Cogs: Lawbots, Cashbots, Sellbots, Bossbots and Boardbots.',
               'Each Gag Track has different amounts of accuracy and damage.',
               'Sound gags will affect all Cogs but will wake up any lured Cogs.',
               'Defeating Cogs in strategic order can greatly increase your chances of winning battles.',
@@ -10034,3 +10037,40 @@ CopyrightOff = 'off'
 
 #Boss Cog Stunned Text
 BossCogDoStunned = 'Stunned!'
+
+#Boardbots
+Boardbot = 'Boardbot'
+BoardbotS = 'a Boardbot'
+BoardbotP = 'Boardbots'
+BoardbotSkelS = 'a Boardbot Skelecog'
+BoardbotSkelP = 'Bossbot Skelecogs'
+
+SuitConArtist = 'Con Artist'
+SuitConnoisseur = 'Connoisseur'
+SuitMagnate = 'Magnate'
+SuitSwindler = 'Swindler'
+SuitMiddleman = 'Middleman'
+SuitToxicManager = 'Toxic Manager'
+SuitBigFish = 'Big Fish'
+SuitHeadHoncho = 'Head Honcho'
+
+SuitConArtistS = 'a Con Artist'
+SuitConnoisseurS = 'a Connoisseur'
+SuitMagnateS = 'a Magnate'
+SuitSwindlerS = 'a Swindler'
+SuitMiddlemanS = 'a Middleman'
+SuitToxicManagerS = 'a Toxic Manager'
+SuitBigFishS = 'a Big Fish'
+SuitHeadHonchoS = 'a Head Honcho'
+
+SuitConArtistP = 'Con Artists'
+SuitConnoisseurP = 'Connoisseurs'
+SuitMagnateP = 'Magnates'
+SuitSwindlerP = 'Swindlers'
+SuitMiddlemanP = 'Middlemen'
+SuitToxicManagerP = 'Toxic Managers'
+SuitBigFishP = 'Big Fish'
+SuitHeadHonchoP = 'Head Honchos'
+
+#Boardbot HQ
+BoardbotHQ = ('to', 'in', 'Boardbot HQ')
